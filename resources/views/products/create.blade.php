@@ -10,7 +10,7 @@
                     <div class="card-body">
                         <form action="{{ route('products.add') }}" method="POST" enctype="multipart/form-data">
                             @csrf
-                            <div class="form-group">
+                            <div class="form-group"> 
                                 <label for="name">Name</label>
                                 <input type="text" class="form-control" id="name" name="name" required>
                             </div>

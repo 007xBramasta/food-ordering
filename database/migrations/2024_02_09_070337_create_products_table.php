@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('price');
             $table->foreignId('categories_id');
-            $table->string('image_menu');
+            $table->string('image_menu')->nullable();
             $table->timestamps();
         });
     }

@@ -26,47 +26,70 @@ class ProductController extends Controller
         ]);
     }
     
-    
-    public function addProduct(Request $request): RedirectResponse
+    public function addProduct(Request $request)
     {
-        // Ubah pemanggilan input menjadi sesuai dengan nama-nama field pada form
-        $name = $request->input("name");
-        $description = $request->input("description");
-        $price = $request->input("price");
-        $categories_id = $request->input("categories_id");
-        $image_menu = $request->file("image_menu");
-    
-        // Validasi apakah semua field sudah diisi
-        if (empty($name) || empty($description) || empty($price) || empty($categories_id) || empty($image_menu)) {
-            // Jika ada field yang kosong, kembalikan kembali ke halaman create dengan pesan error
-            return redirect()->route("products.create")->withInput()->withErrors(["error" => "All fields are required"]);
+        $name = $request->input('name');
+        $description = $request->input('description');
+        $price = $request->input('price');
+        $categories_id = $request->input('categories_id');
+        $image_menu = $request->input('image_menu');
+
+        // Periksa apakah nama produk baru tidak kosong
+        if (empty($name)) {
+            $products = $this->productService->getProduct();
+            return response()->view('products.create', [
+                'title' => 'Product',
+                'products' => $products,
+                'error' => 'Product name is required'
+            ]);
         }
-    
-        // Simpan produk dengan menggunakan ProductService
+
         $this->productService->saveProduct(
             Str::uuid(), // UUID
             $name, // Nama produk
             $description, // Deskripsi produk
             $price, // Harga produk
             $categories_id, // ID kategori produk
-            $image_menu->store("images") // Simpan gambar menu produk ke direktori images
+            $image_menu // Gambar menu produk
         );
-    
-        // Redirect kembali ke halaman produk setelah berhasil menyimpan produk
-        return redirect()->route("products.product");
+
+        return redirect()->route('products');
     }
 
+    
     public function editProduct(Request $request, string $productId)
     {
-        $newProduct = $request->input("newProduct");
+            
+        $newProduct = $request->input('name');
+        $newDescription = $request->input('description');
+        $newPrice = $request->input('price');
+        $newCategories_id = $request->input('categories_id');
+        $newImage_menu = $request->input('image_menu');
 
+        // Periksa apakah nama produk baru tidak kosong
         if (empty($newProduct)) {
-            return redirect()->back()->with('error', 'New Product is required');
+            // Jika nama produk baru kosong, ambil daftar produk dan kembali ke halaman edit produk dengan pesan kesalahan
+            $products = $this->productService->getProduct();
+            return response()->view('products.edit', [
+                'title' => 'Product',
+                'products' => $products,
+                'error' => 'Product name is required'
+            ]);
         }
 
-        $this->productService->editProduct($productId, $newProduct);
+        // Jika nama produk baru tidak kosong, panggil method editProduct dari ProductService untuk mengedit produk
+        $this->productService->editProduct(
+            $productId,
+            $newProduct,
+            $newDescription,
+            $newPrice,
+            $newCategories_id,
+            $newImage_menu
+        );
 
-        return redirect()->action([ProductController::class, 'product']);
+        // Redirect ke halaman produk atau halaman lain yang diinginkan
+        return redirect()->route('products');
+
     }
 
     public function removeProduct(Request $request, string $productId): RedirectResponse

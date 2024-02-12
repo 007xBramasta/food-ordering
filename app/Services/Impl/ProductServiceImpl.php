@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class ProductServiceImpl implements ProductService
 {
-    public function saveProduct(string $id, string $name, string $description, string $price, string $categories_id, string $image_menu): void
+    public function saveProduct(string $id, string $name, string $description, string $price, string $categories_id, ?string $image_menu): void
     {
         $product = new Product([
             "id" => $id,
@@ -19,7 +19,7 @@ class ProductServiceImpl implements ProductService
             "image_menu" => $image_menu,
         ]);
         $product->save();
-    }
+    }   
 
     public function getProduct(): Collection
     {

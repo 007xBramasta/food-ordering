@@ -18,7 +18,7 @@ class ProductContrllerTest extends TestCase
             "description" => "enak",
             "price" => "Rp.10000",
             "categories_id" => 2,
-            "images_menu" => "soto.jpg"
-        ])->assertRedirect("/products/products");
+            "image_menu" => "soto.jpg"
+        ])->assertRedirect("/products");
     }
 }
